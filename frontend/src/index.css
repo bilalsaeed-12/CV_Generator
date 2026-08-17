@@ -1,0 +1,214 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --page-w: 794px; /* A4 at 96dpi */
+    --page-h: 1123px;
+  }
+
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-paper text-ink font-sans antialiased;
+    font-feature-settings: 'ss01', 'cv01';
+  }
+
+  ::selection {
+    @apply bg-brass/35 text-ink;
+  }
+
+  /* One focus treatment everywhere, so keyboard users always see where they are. */
+  :focus-visible {
+    @apply outline-none ring-2 ring-brass ring-offset-2 ring-offset-paper rounded-[3px];
+  }
+  .on-ink :focus-visible {
+    @apply ring-offset-ink;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display;
+    font-optical-sizing: auto;
+  }
+
+  /* Thin, quiet scrollbars — the page should be the loudest thing on screen. */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-graphite/25;
+    border: 3px solid transparent;
+    background-clip: content-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-graphite/45;
+    background-clip: content-box;
+  }
+}
+
+@layer components {
+  /* Eyebrow labels — set in the utility face, always uppercase, always tracked out. */
+  .eyebrow {
+    @apply font-mono text-2xs uppercase tracking-[0.18em] text-graphite-soft;
+  }
+
+  /* Crop marks: the signature structural motif. A resume is a document
+     destined for print, so the app frames things the way a press would. */
+  .crop-frame {
+    position: relative;
+  }
+  .crop-frame::before,
+  .crop-frame::after {
+    content: '';
+    position: absolute;
+    width: 11px;
+    height: 11px;
+    pointer-events: none;
+    border-color: currentColor;
+    opacity: 0.35;
+  }
+  .crop-frame::before {
+    top: -5px;
+    left: -5px;
+    border-top: 1px solid;
+    border-left: 1px solid;
+  }
+  .crop-frame::after {
+    bottom: -5px;
+    right: -5px;
+    border-bottom: 1px solid;
+    border-right: 1px solid;
+  }
+
+  .shimmer {
+    background-image: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(232, 163, 61, 0.28) 45%,
+      transparent 90%
+    );
+    background-size: 200% 100%;
+    @apply animate-sweep;
+  }
+
+  .skeleton {
+    @apply relative overflow-hidden rounded bg-paper-sunk;
+  }
+  .skeleton::after {
+    content: '';
+    @apply absolute inset-0 shimmer;
+  }
+
+  .hairline {
+    @apply border-paper-line;
+  }
+
+  .link-underline {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1px;
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    transition: background-size 0.3s cubic-bezier(0.2, 0.8, 0.3, 1);
+  }
+  .link-underline:hover {
+    background-size: 100% 1px;
+  }
+
+  /* Faint grid, like a drafting sheet under the composed page. */
+  .drafting-grid {
+    background-image: linear-gradient(rgba(74, 84, 104, 0.055) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(74, 84, 104, 0.055) 1px, transparent 1px);
+    background-size: 26px 26px;
+  }
+  .drafting-grid-dark {
+    background-image: linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+    background-size: 26px 26px;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  .text-pretty {
+    text-wrap: pretty;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+}
+
+/* ---------- Export: the browser print dialog is the PDF pipeline ---------- */
+@media print {
+  @page {
+    size: A4;
+    margin: 0;
+  }
+
+  body {
+    background: #fff !important;
+  }
+
+  /* Anything not part of the document gets pulled off the sheet. */
+  .print-hide,
+  header,
+  footer,
+  nav {
+    display: none !important;
+  }
+
+  .print-sheet,
+  .print-sheet * {
+    visibility: visible !important;
+  }
+
+  .print-sheet {
+    position: absolute !important;
+    inset: 0 auto auto 0 !important;
+    margin: 0 !important;
+    width: 210mm !important;
+    min-height: 297mm !important;
+    transform: none !important;
+    box-shadow: none !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+  }
+
+  .print-root {
+    position: static !important;
+    overflow: visible !important;
+    height: auto !important;
+  }
+}
+
+/* Motion is a garnish, never the meal. If it's unwelcome, remove it entirely. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

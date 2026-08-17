@@ -1,0 +1,31 @@
+# Sheaf API — dependencies
+#
+# These are the exact versions this backend was built and tested against.
+# Install with:  pip install -r requirements.txt
+#
+# Python 3.11 or 3.12 recommended. On 3.13 some packages may need to compile
+# from source on Windows, which requires build tools you probably don't want
+# to install.
+
+# --- Web framework ---------------------------------------------------------
+fastapi==0.141.1
+uvicorn[standard]==0.52.3
+python-multipart==0.0.32        # form parsing, required by FastAPI for form data
+
+# --- Database --------------------------------------------------------------
+sqlalchemy[asyncio]==2.0.52
+asyncpg==0.31.0                 # the async Postgres driver (the +asyncpg in DATABASE_URL)
+alembic==1.19.1                 # migrations
+
+# --- Validation ------------------------------------------------------------
+pydantic==2.13.4
+pydantic-settings==2.15.0       # loads and validates .env
+email-validator==2.3.0          # required by Pydantic's EmailStr type
+
+# --- Security --------------------------------------------------------------
+bcrypt==5.0.0                   # password hashing
+PyJWT==2.7.0                    # access tokens
+
+# --- HTTP client -----------------------------------------------------------
+httpx==0.28.1                   # used by FastAPI's TestClient; also for future
+                                # outbound calls (GitHub API, LLM providers)
