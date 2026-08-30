@@ -238,6 +238,21 @@ deployed on different domains, you need `COOKIE_SECURE=true` **and**
 
 ---
 
+## Deploying on Railway
+
+Railway does not interpolate reference variables (e.g.
+`${{Postgres.DATABASE_URL}}`) when they're used as the *value* of another
+variable — the app would receive the literal, un-substituted string instead of
+real credentials, and fail at startup.
+
+To work around this, `entrypoint.sh` runs before uvicorn starts. It reads the
+individual Postgres credentials (`PGUSER`, `PGPASSWORD`, `PGPORT`,
+`PGDATABASE`) that Railway sets as real OS environment variables on this
+service, builds a proper `postgresql+asyncpg://` URL against
+`postgres.railway.internal`, and writes it to `/app/.env` — which Pydantic
+Settings reads before anything else. `railway.json` sets this as the deploy
+start command (`sh entrypoint.sh`) instead of calling `uvicorn` directly.
+
 ## Next
 
 Step 3: wire these endpoints into the frontend's `src/lib/storage.js` — the
